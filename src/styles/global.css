@@ -1,0 +1,269 @@
+@import "tailwindcss";
+
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
+/* ─── PALETA DO PRODUTO — ÚNICO lugar que você precisa editar pra rebrandear
+   este template pra qualquer produto. Tudo (a PV inteira em src/pages/index.astro
+   E o popup de checkout em src/components/CheckoutModal.astro) lê daqui —
+   troque só estes 5 tokens e o site inteiro muda de cor junto.
+
+   --wine  = cor primária/marca (botões, títulos, CTA principal, destaques)
+   --pix   = verde do Pix (botão de compra, selos de pagamento) — recomendado
+             NÃO mexer: é a cor oficial que os usuários já reconhecem no checkout
+   --cream = fundo suave (tom bem claro da cor primária)
+   --blush = tom de destaque secundário (hover, fundos de card, bordas sutis)
+   --star  = cor das estrelas de avaliação (normalmente dourado, funciona bem
+             com qualquer paleta primária)
+
+   Valores em oklch(lightness chroma hue) — pra trocar a cor da marca, troque
+   só o HUE (o 3º número) mantendo lightness/chroma parecidos, ou peça pro
+   Claude gerar uma paleta oklch a partir da cor da sua marca. */
+:root {
+  --wine: oklch(40% 0.09 75);
+  --wine-foreground: oklch(100% 0 0);
+  --pix: oklch(72.92% 0.1984 149.58);
+  --pix-foreground: oklch(100% 0 0);
+  --star: oklch(82% 0.17 85);
+  --cream: oklch(97% 0.018 80);
+  --blush: oklch(92% 0.05 80);
+}
+
+@theme {
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in: fade-in 0.3s ease-out both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  /* Brilho passando no CTA — sweep sutil, não gritado */
+  @keyframes shimmer {
+    0%   { transform: translateX(-120%) skewX(-12deg); }
+    60%, 100% { transform: translateX(220%) skewX(-12deg); }
+  }
+  /* Respiração vertical bem sutil (selo garantia) */
+  @keyframes float-y {
+    0%, 100% { transform: rotate(-8deg) translateY(0); }
+    50%      { transform: rotate(-8deg) translateY(-4px); }
+  }
+  /* Slide-up do sticky bar */
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+  /* Topbar: mensagem entra/sai (rotação) */
+  @keyframes topbar-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-sans);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .press-feedback {
+    transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .press-feedback:active {
+    transform: scale(0.96);
+  }
+
+  /* ─── Reveal on scroll ─── IntersectionObserver troca data-visible pra "true" */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  [data-reveal][data-visible="true"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ─── Card tilt 3D suave (KitBreakdown) ─── */
+  .tilt-card {
+    transform-style: preserve-3d;
+    perspective: 800px;
+    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 400ms;
+  }
+  .tilt-card:hover {
+    transform: rotateX(2deg) rotateY(-3deg) translateY(-2px);
+    box-shadow: 0 20px 40px -20px rgba(40, 20, 60, 0.22);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tilt-card:hover { transform: translateY(-2px); }
+  }
+
+  /* ─── Shimmer no CTA principal ─── */
+  .btn-shimmer {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.28) 50%,
+      transparent 100%
+    );
+    transform: translateX(-120%) skewX(-12deg);
+    animation: shimmer 4s ease-in-out infinite;
+    animation-delay: 1.5s;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .btn-shimmer > * { position: relative; z-index: 2; }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-shimmer::after { animation: none; opacity: 0; }
+  }
+
+  /* ─── Selo garantia flutuando ─── */
+  .float-seal {
+    animation: float-y 4s ease-in-out infinite;
+  }
+
+  /* ─── Sticky bottom buy bar ─── */
+  .sticky-bar {
+    animation: slide-up 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* ─── Badge circular de desconto (estilo disc-badge do template) ─── */
+  .disc-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 5;
+    width: 60px;
+    height: 60px;
+    border-radius: 999px;
+    background: linear-gradient(140deg, var(--wine), color-mix(in oklab, var(--wine) 80%, black));
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 22px -8px rgba(40, 20, 60, 0.55);
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    line-height: 1;
+  }
+  .disc-badge b { font-size: 15px; font-weight: 800; }
+  .disc-badge span { font-size: 7px; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+  /* ─── Trilha de progresso (rail) — RitualSteps ─── */
+  .step-rail-track {
+    position: relative;
+    flex: 1;
+    height: 2px;
+    background: color-mix(in oklab, var(--wine) 18%, white);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .step-rail-fill {
+    position: absolute;
+    inset: 0;
+    width: var(--f, 0%);
+    background: var(--wine);
+    transition: width 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .step-dot {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 2px solid color-mix(in oklab, var(--wine) 30%, white);
+    color: var(--wine);
+    font-size: 13px;
+    font-weight: 800;
+    background: white;
+    transition: background 250ms, color 250ms, border-color 250ms, transform 250ms;
+    flex-shrink: 0;
+  }
+  .step-dot.on {
+    background: var(--wine);
+    color: white;
+    border-color: var(--wine);
+    transform: scale(1.08);
+  }
+
+  /* ─── Reviews: scroll-snap horizontal ─── */
+  .review-scroller {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .review-scroller::-webkit-scrollbar { display: none; }
+  .review-scroller > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+  }
+
+  /* ─── Topbar rotativo ─── */
+  .topbar-msg.entering {
+    animation: topbar-in 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* ─── FAQ smooth expand (grid-rows trick) ─── */
+  .faq-item > summary { list-style: none; }
+  .faq-item .faq-body-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .faq-item[open] .faq-body-wrap {
+    grid-template-rows: 1fr;
+  }
+  .faq-item .faq-body-wrap > div {
+    overflow: hidden;
+  }
+}

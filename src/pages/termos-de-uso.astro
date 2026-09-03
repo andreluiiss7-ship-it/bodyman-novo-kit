@@ -1,0 +1,62 @@
+---
+import "../styles/global.css";
+import { SITE } from "../config/site.config";
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Termos de Uso | {SITE.storeName}</title>
+    <meta name="description" content={`Termos de uso e condições de compra da ${SITE.storeName}.`} />
+  </head>
+  <body class="font-sans text-black bg-[var(--cream)] min-h-dvh flex flex-col">
+    <header class="border-b border-black/10 bg-white py-4">
+      <div class="max-w-2xl mx-auto px-4">
+        <a href="/" class="flex flex-col items-center leading-none w-fit mx-auto">
+          <span class="text-2xl tracking-[0.2em] font-medium text-[var(--wine)] uppercase" style="font-family: 'Cormorant Garamond', serif;">{SITE.storeName}</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-2xl w-full mx-auto px-4 py-10">
+      <h1 class="text-2xl sm:text-3xl font-medium text-[var(--wine)]" style="font-family: 'Cormorant Garamond', serif;">Termos de Uso</h1>
+      <p class="text-xs text-black/50 mt-1">Última atualização: 2026 · [Razão social e CNPJ a definir]</p>
+
+      <div class="mt-6 bg-white rounded-xl border border-black/10 p-6 flex flex-col gap-5 text-sm text-black/75 leading-relaxed">
+        <section>
+          <h2 class="font-semibold text-black mb-1.5">1. Sobre a loja</h2>
+          <p>Este site é operado pela {SITE.storeName}, comercializando produtos de cuidado bucal. Ao navegar ou realizar uma compra neste site, você concorda com os termos abaixo.</p>
+        </section>
+        <section>
+          <h2 class="font-semibold text-black mb-1.5">2. Pagamento</h2>
+          <p>As compras são pagas exclusivamente via Pix, processado pela Korvex em ambiente PCI-DSS. A confirmação do pagamento é automática, e o pedido só entra em produção/envio após a confirmação.</p>
+        </section>
+        <section>
+          <h2 class="font-semibold text-black mb-1.5">3. Entrega</h2>
+          <p>O prazo de envio é de até 24h úteis após a confirmação do pagamento, com entrega em até 7 dias úteis via Frete Expresso para todo o Brasil. O código de rastreio é enviado por e-mail.</p>
+        </section>
+        <section>
+          <h2 class="font-semibold text-black mb-1.5">4. Uso do produto</h2>
+          {/* TODO(produto): revise este parágrafo pro seu produto/categoria — o texto
+              abaixo é só um exemplo (categoria: cosmético de uso diário). Ajuste os
+              termos de uso, contraindicações e recomendação de suspensão de uso
+              conforme a natureza real do que você está vendendo. */}
+          <p>{SITE.productName} é um produto de uso diário. Os resultados variam conforme os hábitos de consumo e frequência de uso, conforme descrito na página do produto. Em caso de reação adversa ou desconforto, suspenda o uso e consulte um profissional.</p>
+        </section>
+        <section>
+          <h2 class="font-semibold text-black mb-1.5">5. Trocas, devoluções e garantia</h2>
+          <p>Consulte nossa <a href="/trocas-e-devolucoes" class="text-[var(--wine)] underline">Política de Trocas e Devoluções</a> — 7 dias corridos a partir do recebimento, com reembolso integral.</p>
+        </section>
+        <section>
+          <h2 class="font-semibold text-black mb-1.5">6. Privacidade</h2>
+          <p>O tratamento dos seus dados pessoais segue nossa <a href="/politica-de-privacidade" class="text-[var(--wine)] underline">Política de Privacidade</a>.</p>
+        </section>
+      </div>
+
+      <a href="/" class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--wine)] hover:underline">← Voltar para a loja</a>
+    </main>
+  </body>
+</html>

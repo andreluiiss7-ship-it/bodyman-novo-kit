@@ -1,0 +1,175 @@
+---
+import "../styles/global.css";
+import { SITE } from "../config/site.config";
+
+export const prerender = false;
+
+const prefilledCode = Astro.url.searchParams.get("codigo") ?? "";
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Rastrear pedido | {SITE.storeName}</title>
+    <meta name="description" content={`Acompanhe o status do seu pedido ${SITE.productName} pelo código de compra.`} />
+  </head>
+  <body class="font-sans text-black bg-[var(--cream)] min-h-dvh flex flex-col">
+    <header class="border-b border-black/10 bg-white py-4">
+      <div class="max-w-2xl mx-auto px-4">
+        <a href="/" class="flex flex-col items-center leading-none w-fit mx-auto">
+          <span class="text-2xl tracking-[0.2em] font-medium text-[var(--wine)] uppercase" style="font-family: 'Cormorant Garamond', serif;">{SITE.storeName}</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-2xl w-full mx-auto px-4 py-10">
+      <h1 class="text-2xl sm:text-3xl font-medium text-[var(--wine)] text-center" style="font-family: 'Cormorant Garamond', serif;">Rastrear pedido</h1>
+      <p class="text-sm text-black/60 text-center mt-2">
+        Digite o código do seu pedido e o e-mail usado na compra pra ver o status.
+      </p>
+
+      <form id="rastreio-form" class="mt-6 bg-white rounded-xl border border-black/10 p-5 flex flex-col gap-3">
+        <label class="text-sm">
+          <span class="block text-black/60 mb-1">Código do pedido</span>
+          <input
+            required
+            name="orderId"
+            type="text"
+            placeholder={`${SITE.orderIdPrefix}12345678`}
+            value={prefilledCode}
+            class="w-full rounded-md border border-black/15 px-3 py-2.5 text-black uppercase focus:outline-none focus:ring-2 focus:ring-[var(--wine)]/40"
+          />
+        </label>
+        <label class="text-sm">
+          <span class="block text-black/60 mb-1">E-mail usado na compra</span>
+          <input
+            required
+            name="email"
+            type="email"
+            autocomplete="email"
+            class="w-full rounded-md border border-black/15 px-3 py-2.5 text-black focus:outline-none focus:ring-2 focus:ring-[var(--wine)]/40"
+          />
+        </label>
+
+        <p data-form-error class="hidden text-sm text-red-600"></p>
+
+        <button
+          type="submit"
+          class="mt-1 bg-[var(--wine)] hover:opacity-90 text-white font-bold uppercase tracking-[0.1em] text-sm py-3 rounded-md transition-all duration-200 active:scale-[0.97]"
+        >
+          Consultar pedido
+        </button>
+      </form>
+
+      <div data-result data-carrier={SITE.carrierName} class="hidden mt-6 bg-white rounded-xl border border-black/10 p-5"></div>
+    </main>
+
+    <script>
+      const STEP_LABEL: Record<string, string> = {
+        pending: "Aguardando pagamento",
+        paid: "Pagamento confirmado",
+        processing: "Processando pedido",
+        shipped: "Enviado",
+        in_transit: "Em trânsito",
+        out_for_delivery: "Saiu para entrega",
+        delivered: "Entregue",
+      };
+      const STEPS = ["pending", "paid", "processing", "shipped", "in_transit", "out_for_delivery", "delivered"];
+
+      const PROBLEM_MESSAGES: Record<string, string> = {
+        lost: "Identificamos um problema: este pedido foi extraviado durante o transporte. Já estamos resolvendo com a transportadora.",
+        stolen_truck: "Identificamos um problema: o veículo que transportava este pedido sofreu um roubo. Estamos apurando e vamos te atualizar.",
+      };
+      const CLOSED_MESSAGES: Record<string, string> = {
+        refunded: "Este pedido foi reembolsado.",
+        charged_back: "Este pedido foi estornado.",
+        failed: "O pagamento deste pedido não foi concluído.",
+      };
+
+      function formatDate(ts: number | null | undefined) {
+        if (!ts) return null;
+        return new Date(ts).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+      }
+
+      function renderTimeline(order: any) {
+        if (PROBLEM_MESSAGES[order.status]) {
+          return `<p class="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5 text-center">${PROBLEM_MESSAGES[order.status]}</p>`;
+        }
+        if (CLOSED_MESSAGES[order.status]) {
+          return `<p class="text-sm text-black/60 text-center py-2">${CLOSED_MESSAGES[order.status]}</p>`;
+        }
+
+        const currentIndex = STEPS.indexOf(order.status);
+        const dates: Record<string, number | null> = Object.fromEntries(
+          STEPS.map((step) => [step, order.statusTimestamps?.[step] ?? (step === "pending" ? order.createdAt : null)])
+        );
+
+        const items = STEPS.map((step, i) => {
+          const done = i <= currentIndex;
+          const date = formatDate(dates[step]);
+          return `
+            <div class="flex items-start gap-3">
+              <div class="flex flex-col items-center">
+                <div class="size-6 rounded-full flex items-center justify-center text-[11px] font-bold ${done ? "bg-[var(--wine)] text-white" : "bg-black/10 text-black/50"}">
+                  ${done ? "✓" : i + 1}
+                </div>
+                ${i < STEPS.length - 1 ? `<div class="w-0.5 flex-1 min-h-[24px] ${i < currentIndex ? "bg-[var(--wine)]" : "bg-black/10"}"></div>` : ""}
+              </div>
+              <div class="pb-5">
+                <p class="text-sm font-medium ${done ? "text-black" : "text-black/50"}">${STEP_LABEL[step]}</p>
+                ${date ? `<p class="text-xs text-black/50">${date}</p>` : ""}
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        return `<div class="mt-1">${items}</div>`;
+      }
+
+      const form = document.getElementById("rastreio-form") as HTMLFormElement;
+      const errorEl = form.querySelector<HTMLElement>("[data-form-error]")!;
+      const resultEl = document.querySelector<HTMLElement>("[data-result]")!;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorEl.classList.add("hidden");
+        resultEl.classList.add("hidden");
+
+        const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+        submitBtn.disabled = true;
+
+        const formData = new FormData(form);
+        try {
+          const resp = await fetch("/api/rastreio", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: formData.get("orderId"),
+              email: formData.get("email"),
+            }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) throw new Error(data.error || "Não foi possível consultar o pedido.");
+
+          resultEl.innerHTML = `
+            <p class="text-xs text-black/60">Pedido</p>
+            <p class="font-mono text-sm text-black font-medium">${data.orderId}</p>
+            <p class="text-sm text-black/60 mt-2">${data.offer?.name ?? ""}</p>
+            ${renderTimeline(data)}
+            ${data.trackingCode ? `<div class="mt-2 rounded-md bg-[var(--cream)] px-3 py-2 text-sm"><span class="text-black/60">Rastreio ${resultEl.dataset.carrier}: </span><strong class="text-black">${data.trackingCode}</strong></div>` : ""}
+          `;
+          resultEl.classList.remove("hidden");
+        } catch (err) {
+          errorEl.textContent = err instanceof Error ? err.message : "Erro inesperado.";
+          errorEl.classList.remove("hidden");
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+    </script>
+  </body>
+</html>
