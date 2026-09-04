@@ -185,6 +185,19 @@ export function mountCheckout() {
     });
   });
 
+  // Tilt 3D sutil só em desktop com mouse (não faz sentido em touch).
+  if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    document.querySelectorAll<HTMLElement>(".fragrance-card").forEach((card) => {
+      card.addEventListener("mousemove", (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `perspective(700px) rotateX(${(-py * 5).toFixed(2)}deg) rotateY(${(px * 6).toFixed(2)}deg)`;
+      });
+      card.addEventListener("mouseleave", () => { card.style.transform = ""; });
+    });
+  }
+
   function renderLiveTotal() {
     const { kit, shipping, subtotal, total } = totals();
     const subEl = document.querySelector("[data-live-subtotal]");
