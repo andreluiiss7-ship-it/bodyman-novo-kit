@@ -42,7 +42,7 @@ export const SITE = {
    * ID do Meta Pixel. Deixe "" para desativar (nenhum script do Pixel é injetado).
    * Preencha com o ID do seu Pixel pra rastrear PageView/InitiateCheckout/Purchase.
    */
-  metaPixelId: "1365460782135742",
+  metaPixelId: "1056359963513194",
 
   email: {
     /**
