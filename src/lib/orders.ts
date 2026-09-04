@@ -7,7 +7,7 @@ export const ORDERS_PAGE_SIZE = 20;
 export interface OrderSummary {
   orderId: string;
   status: string;
-  offer?: { name?: string; quantity?: number; amount?: number };
+  offer?: { name?: string; quantity?: number; amount?: number; kit?: { fragrance?: string } };
   shipping?: { name?: string; price?: number };
   cliente?: { nome?: string; email?: string; telefone?: string };
   endereco?: { cep?: string; rua?: string; numero?: string; complemento?: string; bairro?: string; cidade?: string; uf?: string };

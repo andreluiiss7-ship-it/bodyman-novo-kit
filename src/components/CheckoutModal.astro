@@ -1,8 +1,11 @@
 ---
 import { SHIPPING_OPTIONS, DEFAULT_SHIPPING_ID } from "../data/shipping";
-import { KITS, DEFAULT_KIT_INDEX } from "../data/kits";
+import { KITS, DEFAULT_KIT_INDEX, FRAGRANCES } from "../data/kits";
 import { SITE } from "../config/site.config";
 import kitImage from "../assets/products/hero.webp";
+import vibrationThumb from "../assets/products/vibration-thumb.webp";
+import blunnThumb from "../assets/products/blunn-thumb.webp";
+import feroThumb from "../assets/products/fero-thumb.webp";
 
 const initialShipping = SHIPPING_OPTIONS.find((s) => s.id === DEFAULT_SHIPPING_ID) ?? SHIPPING_OPTIONS[0];
 // Display inicial usa o kit padrão (KITS[DEFAULT_KIT_INDEX]). O script do checkout
@@ -10,6 +13,7 @@ const initialShipping = SHIPPING_OPTIONS.find((s) => s.id === DEFAULT_SHIPPING_I
 // no seletor de kits do hero — via getSelectedKit() do cart-state.
 const initialKit = KITS[DEFAULT_KIT_INDEX];
 const initialTotal = (initialKit.price + initialShipping.price).toFixed(2).replace(".", ",");
+const fragranceThumbs = [vibrationThumb, blunnThumb, feroThumb];
 ---
 
 <div
@@ -49,10 +53,36 @@ const initialTotal = (initialKit.price + initialShipping.price).toFixed(2).repla
     <!-- ============ STEP 1: dados + endereço + frete ============ -->
     <form id="checkout-step-1" data-step="1" novalidate class="p-5 sm:p-6 md:p-7 flex flex-col gap-6 md:col-span-3 md:border-r md:border-black/8">
 
+      <!-- Fragrância (só aparece pro kit de 1 frasco — hidden por padrão, checkout.ts alterna) -->
+      <section id="fragrance-picker" data-fragrance-picker class="hidden rounded-2xl bg-[var(--blush)]/60 ring-2 ring-[var(--wine)]/30 p-4 sm:p-5" role="radiogroup" aria-label="Escolha sua fragrância" aria-required="true">
+        <div class="flex items-center gap-2.5 mb-4">
+          <span class="grid size-7 place-items-center rounded-full bg-[var(--wine)] text-white shadow-[0_4px_10px_-3px_color-mix(in_oklab,var(--wine)_60%,transparent)]">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <h3 class="text-[11.5px] font-bold uppercase tracking-[0.18em] text-[var(--wine)]">Escolha sua fragrância</h3>
+        </div>
+        <div class="grid grid-cols-3 gap-2.5">
+          {FRAGRANCES.map((name, idx) => (
+            <button
+              type="button"
+              data-fragrance-option={name}
+              data-fragrance-thumb={fragranceThumbs[idx].src}
+              role="radio"
+              aria-checked="false"
+              class="fragrance-card flex flex-col items-center gap-2 rounded-xl border-2 border-black/15 bg-white px-2 py-3 text-center transition-all press-feedback"
+            >
+              <img src={fragranceThumbs[idx].src} alt="" class="h-14 w-auto object-contain" loading="lazy" />
+              <span class="text-[11px] font-bold text-black leading-tight">{name}</span>
+            </button>
+          ))}
+        </div>
+        <p data-fragrance-error class="hidden text-xs text-red-600 mt-2.5">Escolha uma fragrância pra continuar.</p>
+      </section>
+
       <!-- 1. Seus dados -->
       <section class="rounded-2xl bg-[var(--cream)]/60 ring-1 ring-black/[0.06] p-4 sm:p-5">
         <div class="flex items-center gap-2.5 mb-4">
-          <span class="grid size-7 place-items-center rounded-full bg-[var(--wine)] text-white text-[12px] font-bold shadow-[0_4px_10px_-3px_rgba(124,58,237,0.6)]">1</span>
+          <span class="grid size-7 place-items-center rounded-full bg-[var(--wine)] text-white text-[12px] font-bold shadow-[0_4px_10px_-3px_color-mix(in_oklab,var(--wine)_60%,transparent)]">1</span>
           <h3 class="text-[11.5px] font-bold uppercase tracking-[0.18em] text-[var(--wine)]">Seus dados</h3>
         </div>
         <div class="flex flex-col gap-3.5">
@@ -84,7 +114,7 @@ const initialTotal = (initialKit.price + initialShipping.price).toFixed(2).repla
       <!-- 2. Endereço -->
       <section class="rounded-2xl bg-[var(--cream)]/60 ring-1 ring-black/[0.06] p-4 sm:p-5">
         <div class="flex items-center gap-2.5 mb-4">
-          <span class="grid size-7 place-items-center rounded-full bg-[var(--wine)] text-white text-[12px] font-bold shadow-[0_4px_10px_-3px_rgba(124,58,237,0.6)]">2</span>
+          <span class="grid size-7 place-items-center rounded-full bg-[var(--wine)] text-white text-[12px] font-bold shadow-[0_4px_10px_-3px_color-mix(in_oklab,var(--wine)_60%,transparent)]">2</span>
           <h3 class="text-[11.5px] font-bold uppercase tracking-[0.18em] text-[var(--wine)]">Endereço de entrega</h3>
         </div>
         <div class="flex flex-col gap-3.5">
@@ -133,7 +163,7 @@ const initialTotal = (initialKit.price + initialShipping.price).toFixed(2).repla
       <!-- 3. Frete -->
       <section class="rounded-2xl bg-[var(--cream)]/60 ring-1 ring-black/[0.06] p-4 sm:p-5">
         <div class="flex items-center gap-2.5 mb-4">
-          <span class="grid size-7 place-items-center rounded-full bg-[var(--wine)] text-white text-[12px] font-bold shadow-[0_4px_10px_-3px_rgba(124,58,237,0.6)]">3</span>
+          <span class="grid size-7 place-items-center rounded-full bg-[var(--wine)] text-white text-[12px] font-bold shadow-[0_4px_10px_-3px_color-mix(in_oklab,var(--wine)_60%,transparent)]">3</span>
           <h3 class="text-[11.5px] font-bold uppercase tracking-[0.18em] text-[var(--wine)]">Forma de envio</h3>
         </div>
         <div role="radiogroup" aria-label="Opções de frete" class="flex flex-col gap-2.5">
@@ -172,7 +202,7 @@ const initialTotal = (initialKit.price + initialShipping.price).toFixed(2).repla
       </section>
 
       <!-- Total ao vivo (resumo do mobile; no desktop a sidebar já cumpre esse papel) -->
-      <div class="md:hidden rounded-2xl bg-white ring-1 ring-[var(--wine)]/15 shadow-[0_16px_40px_-28px_rgba(83,40,133,0.5)] p-4 sm:p-5">
+      <div class="md:hidden rounded-2xl bg-white ring-1 ring-[var(--wine)]/15 shadow-[0_16px_40px_-28px_color-mix(in_oklab,var(--wine)_50%,transparent)] p-4 sm:p-5">
         <div class="flex items-center justify-between text-sm text-black/70">
           <span>Produto</span>
           <span data-live-subtotal class="tabular-nums font-semibold text-black">R$ {initialKit.price.toFixed(2).replace(".", ",")}</span>
@@ -194,7 +224,7 @@ const initialTotal = (initialKit.price + initialShipping.price).toFixed(2).repla
 
       <button
         type="submit"
-        class="checkout-cta group relative overflow-hidden bg-gradient-to-br from-[var(--wine)] to-[color-mix(in_oklab,var(--wine)_75%,black)] text-white font-bold uppercase tracking-[0.18em] text-sm py-4 rounded-xl transition-all duration-200 active:scale-[0.985] shadow-[0_10px_28px_-10px_rgba(124,58,237,0.55)] hover:shadow-[0_14px_36px_-10px_rgba(124,58,237,0.7)] flex items-center justify-center gap-2"
+        class="checkout-cta group relative overflow-hidden bg-gradient-to-br from-[var(--wine)] to-[color-mix(in_oklab,var(--wine)_75%,black)] text-white font-bold uppercase tracking-[0.18em] text-sm py-4 rounded-xl transition-all duration-200 active:scale-[0.985] shadow-[0_10px_28px_-10px_color-mix(in_oklab,var(--wine)_55%,transparent)] hover:shadow-[0_14px_36px_-10px_color-mix(in_oklab,var(--wine)_70%,transparent)] flex items-center justify-center gap-2"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         Revisar pedido — <span data-step1-cta-total class="tabular-nums">R$ {initialTotal}</span>
@@ -215,7 +245,7 @@ const initialTotal = (initialKit.price + initialShipping.price).toFixed(2).repla
         <p class="text-lg font-semibold text-black mt-1" style="font-family: 'Cormorant Garamond', serif;">Seu {SITE.productName}</p>
       </div>
 
-      <div class="rounded-2xl bg-white ring-1 ring-black/8 shadow-[0_20px_50px_-25px_rgba(83,40,133,0.35)] p-5 flex items-center gap-4">
+      <div class="rounded-2xl bg-white ring-1 ring-black/8 shadow-[0_20px_50px_-25px_color-mix(in_oklab,var(--wine)_35%,transparent)] p-5 flex items-center gap-4">
         <div class="relative shrink-0 size-20 rounded-xl bg-[var(--blush)] grid place-items-center overflow-hidden">
           <img data-review-kit-image src={kitImage.src} alt={SITE.productName} class="size-full object-cover" />
           <span data-review-kit-qty class="absolute -top-1.5 -right-1.5 grid size-6 place-items-center rounded-full bg-[var(--wine)] text-white text-[11px] font-bold shadow-md">{initialKit.qty}</span>
@@ -302,7 +332,7 @@ const initialTotal = (initialKit.price + initialShipping.price).toFixed(2).repla
       <button
         type="button"
         data-generate-pix
-        class="bg-gradient-to-br from-[var(--wine)] to-[color-mix(in_oklab,var(--wine)_75%,black)] hover:brightness-110 text-white font-bold uppercase tracking-[0.18em] text-sm py-4 rounded-xl transition-all duration-200 active:scale-[0.985] shadow-[0_10px_28px_-10px_rgba(124,58,237,0.55)] hover:shadow-[0_14px_36px_-10px_rgba(124,58,237,0.7)] flex items-center justify-center gap-2 disabled:opacity-60 disabled:pointer-events-none"
+        class="bg-gradient-to-br from-[var(--wine)] to-[color-mix(in_oklab,var(--wine)_75%,black)] hover:brightness-110 text-white font-bold uppercase tracking-[0.18em] text-sm py-4 rounded-xl transition-all duration-200 active:scale-[0.985] shadow-[0_10px_28px_-10px_color-mix(in_oklab,var(--wine)_55%,transparent)] hover:shadow-[0_14px_36px_-10px_color-mix(in_oklab,var(--wine)_70%,transparent)] flex items-center justify-center gap-2 disabled:opacity-60 disabled:pointer-events-none"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
         <span data-generate-pix-label>Gerar Pix agora</span>

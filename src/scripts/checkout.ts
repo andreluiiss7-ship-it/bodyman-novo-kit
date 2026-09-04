@@ -133,6 +133,11 @@ export function mountCheckout() {
   let orderId: string | null = null;
   let pollTimer: number | undefined;
   let selectedShippingId = DEFAULT_SHIPPING_ID;
+  let selectedFragrance: string | null = null;
+
+  const reviewImg = document.querySelector<HTMLImageElement>("[data-review-kit-image]");
+  const defaultKitImageSrc = reviewImg?.getAttribute("src") ?? "";
+  const fragranceError = document.querySelector<HTMLElement>("[data-fragrance-error]");
 
   function totals() {
     const kit = getKit(getSelectedKit());
@@ -156,6 +161,29 @@ export function mountCheckout() {
       if (dot) dot.classList.toggle("opacity-0", !isMatch);
     });
   }
+
+  function renderFragrancePicker() {
+    const { kit } = totals();
+    const picker = document.getElementById("fragrance-picker");
+    if (picker) picker.classList.toggle("hidden", !kit.requiresFragrance);
+    document.querySelectorAll<HTMLElement>("[data-fragrance-option]").forEach((btn) => {
+      const isMatch = btn.dataset.fragranceOption === selectedFragrance;
+      btn.setAttribute("aria-checked", String(isMatch));
+      btn.classList.toggle("border-[var(--wine)]", isMatch);
+      btn.classList.toggle("bg-[var(--blush)]", isMatch);
+      btn.classList.toggle("border-black/15", !isMatch);
+      btn.classList.toggle("bg-white", !isMatch);
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-fragrance-option]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      selectedFragrance = btn.dataset.fragranceOption || null;
+      fragranceError?.classList.add("hidden");
+      renderFragrancePicker();
+      if (reviewImg) reviewImg.src = btn.dataset.fragranceThumb || defaultKitImageSrc;
+    });
+  });
 
   function renderLiveTotal() {
     const { kit, shipping, subtotal, total } = totals();
@@ -204,7 +232,11 @@ export function mountCheckout() {
     const freNameEl = document.querySelector("[data-review-shipping-name]");
     const totEl = document.querySelector("[data-review-total]");
     const addrEl = document.querySelector("[data-review-address]");
-    if (nameEl) nameEl.textContent = `${OFFER.name} — ${kit.name}`;
+    if (nameEl) {
+      nameEl.textContent = kit.requiresFragrance && selectedFragrance
+        ? `${OFFER.name} — ${kit.name} (${selectedFragrance})`
+        : `${OFFER.name} — ${kit.name}`;
+    }
     if (qtyEl) qtyEl.textContent = `${kit.qty} × 100ml`;
     if (subEl) subEl.textContent = `R$ ${formatBRL(subtotal)}`;
     if (freNameEl) freNameEl.textContent = shipping.name;
@@ -235,6 +267,10 @@ export function mountCheckout() {
     document.body.style.overflow = "hidden";
     document.querySelector<HTMLElement>(".stickycta")?.classList.add("is-covered");
     if (!orderId) showStep("1");
+    selectedFragrance = null;
+    fragranceError?.classList.add("hidden");
+    if (reviewImg) reviewImg.src = defaultKitImageSrc;
+    renderFragrancePicker();
     renderShippingCards();
     renderLiveTotal();
     requestAnimationFrame(() => {
@@ -324,6 +360,12 @@ export function mountCheckout() {
       cpfInput.focus();
       return;
     }
+    const { kit: currentKit } = totals();
+    if (currentKit.requiresFragrance && !selectedFragrance) {
+      fragranceError?.classList.remove("hidden");
+      document.getElementById("fragrance-picker")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
 
     renderReview();
     const { total } = totals();
@@ -366,6 +408,7 @@ export function mountCheckout() {
             uf: formData.get("uf"),
           },
           frete: selectedShippingId,
+          fragrance: selectedFragrance,
           tracking: getStoredUtms(),
         }),
       });

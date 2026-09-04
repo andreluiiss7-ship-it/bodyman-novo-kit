@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { kv } from "@vercel/kv";
 import { OFFER } from "../../data/offer";
-import { getKit } from "../../data/kits";
+import { getKit, FRAGRANCES } from "../../data/kits";
 import { getShipping } from "../../data/shipping";
 import { sendUtmifyOrder, utmifyDate, cleanUtm, type UtmifyOrder } from "./_utmify";
 import { ORDERS_INDEX_KEY } from "../../lib/kv-keys";
@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: "Corpo da requisição inválido." }), { status: 400 });
   }
 
-  const { kitIndex, cliente, endereco, frete, tracking } = body || {};
+  const { kitIndex, cliente, endereco, frete, tracking, fragrance } = body || {};
   // Preço/quantidade sempre lido da tabela server-side via kitIndex validado.
   // NUNCA usar valor vindo do cliente diretamente.
   const kit = getKit(Number(kitIndex));
@@ -51,6 +51,11 @@ export const POST: APIRoute = async ({ request }) => {
   if (!endereco?.cep || !endereco?.rua || !endereco?.numero || !endereco?.bairro || !endereco?.cidade || !endereco?.uf) {
     return new Response(JSON.stringify({ error: "Endereço de entrega incompleto." }), { status: 400 });
   }
+  // Kit de 1 frasco exige escolher a fragrância — whitelist server-side, nunca confia
+  // no cliente além de "é uma dessas 3 strings exatas".
+  if (kit.requiresFragrance && !FRAGRANCES.includes(fragrance)) {
+    return new Response(JSON.stringify({ error: "Selecione uma fragrância válida." }), { status: 400 });
+  }
 
   const orderId = SITE.orderIdPrefix + Date.now().toString().slice(-8) + Math.floor(10 + Math.random() * 90);
 
@@ -58,8 +63,11 @@ export const POST: APIRoute = async ({ request }) => {
   // enviado pelo cliente. Combo (kit) tem PREÇO FIXO por unidade de kit — envio 1 item de
   // qty=1 com o preço total do kit pra Korvex, senão o gateway multiplica errado. Frete
   // grátis NÃO vira line item (Korvex rejeita produto com preço 0).
+  const productName = kit.requiresFragrance
+    ? `${OFFER.name} — ${kit.name} (${fragrance})`
+    : `${OFFER.name} — ${kit.name}`;
   const products: Array<{ id: string; name: string; quantity: number; price: number }> = [
-    { id: `${OFFER.id}-kit-${kit.i}`, name: `${OFFER.name} — ${kit.name}`, quantity: 1, price: kit.price },
+    { id: `${OFFER.id}-kit-${kit.i}`, name: productName, quantity: 1, price: kit.price },
   ];
   if (shipping.price > 0) {
     products.push({ id: `frete-${shipping.id}`, name: shipping.name, quantity: 1, price: shipping.price });
@@ -163,7 +171,7 @@ export const POST: APIRoute = async ({ request }) => {
     {
       status: "pending",
       transactionId: data.transactionId,
-      offer: { id: OFFER.id, name: OFFER.name, kit: { i: kit.i, name: kit.name, qty: kit.qty, price: kit.price }, amount },
+      offer: { id: OFFER.id, name: OFFER.name, kit: { i: kit.i, name: kit.name, qty: kit.qty, price: kit.price, ...(kit.requiresFragrance ? { fragrance } : {}) }, amount },
       shipping: { id: shipping.id, name: shipping.name, price: shipping.price },
       cliente,
       endereco,

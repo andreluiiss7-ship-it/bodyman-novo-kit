@@ -13,7 +13,7 @@ interface OrderForEmail {
   orderId: string;
   cliente?: { nome?: string; email?: string };
   trackingCode?: string | null;
-  offer?: { name?: string; quantity?: number } | null;
+  offer?: { name?: string; quantity?: number; kit?: { fragrance?: string } } | null;
 }
 
 interface EmailContent {
@@ -104,9 +104,9 @@ export async function sendOrderStatusEmail(order: OrderForEmail, statusId: strin
   const subject = def.email.subject.replace("{orderId}", order.orderId);
   const showTracking = TRACKING_STATUSES.has(statusId) ? order.trackingCode : undefined;
   const produto = order.offer?.name
-    ? order.offer.quantity && order.offer.quantity > 1
-      ? `${order.offer.quantity}x ${order.offer.name}`
-      : order.offer.name
+    ? (order.offer.quantity && order.offer.quantity > 1
+        ? `${order.offer.quantity}x ${order.offer.name}`
+        : order.offer.name) + (order.offer.kit?.fragrance ? ` — Fragrância: ${order.offer.kit.fragrance}` : "")
     : null;
   const html = buildEmailHtml({
     clienteNome: order.cliente?.nome ?? "",

@@ -25,13 +25,13 @@
    só o HUE (o 3º número) mantendo lightness/chroma parecidos, ou peça pro
    Claude gerar uma paleta oklch a partir da cor da sua marca. */
 :root {
-  --wine: oklch(40% 0.09 75);
+  --wine: oklch(32% 0.14 18);
   --wine-foreground: oklch(100% 0 0);
   --pix: oklch(72.92% 0.1984 149.58);
   --pix-foreground: oklch(100% 0 0);
   --star: oklch(82% 0.17 85);
-  --cream: oklch(97% 0.018 80);
-  --blush: oklch(92% 0.05 80);
+  --cream: oklch(97% 0.015 20);
+  --blush: oklch(91% 0.045 20);
 }
 
 @theme {
