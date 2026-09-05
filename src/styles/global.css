@@ -11,24 +11,31 @@
 /* ─── PALETA DO PRODUTO — ÚNICO lugar que você precisa editar pra rebrandear
    este template pra qualquer produto. Tudo (a PV inteira em src/pages/index.astro
    E o popup de checkout em src/components/CheckoutModal.astro) lê daqui —
-   troque só estes 5 tokens e o site inteiro muda de cor junto.
+   troque só estes tokens e o site inteiro muda de cor junto.
 
-   --wine  = cor primária/marca (botões, títulos, CTA principal, destaques)
+   --wine  = cor sólida de marca (fundo de botão/badge/tag, sempre pareada com
+             texto claro em cima — funciona em página clara OU escura)
+   --gold  = acento claro — só pra texto/número/borda que fica DIRETO sobre um
+             fundo escuro (não serve como fundo de botão nem como texto sobre
+             fundo claro, onde não teria contraste)
    --pix   = verde do Pix (botão de compra, selos de pagamento) — recomendado
              NÃO mexer: é a cor oficial que os usuários já reconhecem no checkout
-   --cream = fundo suave (tom bem claro da cor primária)
+   --cream = fundo suave (tom bem claro da cor primária) — usado nas telas que
+             continuam com fundo claro (checkout, páginas legais)
    --blush = tom de destaque secundário (hover, fundos de card, bordas sutis)
-   --star  = cor das estrelas de avaliação (normalmente dourado, funciona bem
-             com qualquer paleta primária)
+   --star  = cor das estrelas de avaliação (dourado, funciona bem com qualquer
+             paleta primária)
 
-   Valores em oklch(lightness chroma hue) — pra trocar a cor da marca, troque
-   só o HUE (o 3º número) mantendo lightness/chroma parecidos, ou peça pro
-   Claude gerar uma paleta oklch a partir da cor da sua marca. */
+   Valores em oklch(lightness chroma hue). A home (src/pages/index.astro) roda
+   em tema escuro e define seus próprios neutros (--ink/--muted/--bg/--border/
+   --porc) no :root local do arquivo — ajuste esses junto se mudar de marca. */
 :root {
-  --wine: oklch(32% 0.14 18);
-  --wine-foreground: oklch(100% 0 0);
+  --wine: oklch(40% 0.11 85);
+  --wine-foreground: oklch(97% 0.012 85);
+  --gold: oklch(74% 0.13 85);
+  --gold-foreground: oklch(18% 0.02 85);
   --pix: oklch(72.92% 0.1984 149.58);
-  --pix-foreground: oklch(100% 0 0);
+  --pix-foreground: oklch(97% 0.01 149.58);
   --star: oklch(82% 0.17 85);
   --cream: oklch(97% 0.015 20);
   --blush: oklch(91% 0.045 20);

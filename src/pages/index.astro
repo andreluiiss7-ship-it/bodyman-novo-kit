@@ -441,33 +441,33 @@ const productSchema = {
 </Layout>
 
 <!-- ============================================================
-     ESTILO — CSS da PV. Paleta vem de src/styles/global.css (var(--wine) etc,
-     apelidados aqui pra --ac/--ac-d/--ac-l/--gold). Alguns box-shadow/rgba()
-     abaixo têm um tom lilás fixo (glow/sombra) — puramente decorativo; ajuste
-     se sua paleta for muito diferente de roxo, mas não é obrigatório.
+     ESTILO — CSS da PV. Paleta vem de src/styles/global.css (var(--wine),
+     var(--gold), var(--pix), etc — --wine/--ac/--ac-d apelidados aqui pra
+     superfícies preenchidas, --gold usado direto pra texto/borda sobre o
+     fundo escuro desta página).
      ============================================================ -->
 <style is:global>
-  @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
-
-  /* Paleta herdada de src/styles/global.css (--wine/--pix/--cream/--blush/--star) —
+  /* Paleta herdada de src/styles/global.css (--wine/--gold/--pix/--cream/--blush/--star) —
      NÃO redefina cores aqui. Pra rebrandear pra outro produto, edite só o
      bloco "PALETA DO PRODUTO" em global.css; estes tokens são só apelidos
      usados pelo CSS desta página. --ink/--muted/--bg/--border/--porc/--serif/
      --sans/--rad são neutros de tipografia/layout, não fazem parte da marca —
-     opcionalmente ajustáveis, mas raramente precisam mudar entre produtos. */
+     opcionalmente ajustáveis, mas raramente precisam mudar entre produtos.
+     Esta página roda em TEMA ESCURO: --bg/--porc são escuros e --ink/--muted
+     são claros (o oposto do que o nome sugeriria numa página clara comum). */
   :root {
+    color-scheme: dark;
     --ac: var(--wine);
     --ac-d: color-mix(in oklab, var(--wine) 82%, black);
-    --ac-l: var(--cream);
-    --ink: oklch(21% 0.06 18);
-    --muted: oklch(45% 0.035 18);
-    --bg: oklch(99% 0.005 18);
-    --border: oklch(93% 0.025 18);
-    --ok: #16a34a;
-    --gold: var(--star);
-    --serif: 'Fraunces', Georgia, serif;
-    --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-    --porc: oklch(99% 0.007 18);
+    --ac-l: color-mix(in oklab, var(--gold) 12%, var(--porc));
+    --ink: oklch(94% 0.012 85);
+    --muted: oklch(70% 0.02 85);
+    --bg: oklch(15% 0.012 85);
+    --border: oklch(32% 0.018 85);
+    --ok: oklch(78% 0.17 149.58);
+    --serif: var(--font-display);
+    --sans: var(--font-sans);
+    --porc: oklch(21% 0.016 85);
     /* --blush não é redeclarado aqui — herda direto de global.css pra evitar
        ciclo de var() (self-reference deixaria a propriedade inválida). */
     --line: var(--border);
@@ -477,7 +477,7 @@ const productSchema = {
   img { max-width: 100%; display: block }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 18px }
   .ic { width: 16px; height: 16px; display: inline-block; vertical-align: middle; flex: none }
-  .stars { display: inline-flex; gap: 1px; color: var(--gold) }
+  .stars { display: inline-flex; gap: 1px; color: var(--star) }
   .stars .ic { width: 15px; height: 15px }
 
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; background: linear-gradient(135deg, var(--ac), var(--ac-d)); color: #fff; border: none; border-radius: 100px; font: 800 16px/1 var(--sans); padding: 17px 26px; cursor: pointer; box-shadow: 0 10px 24px -8px color-mix(in oklab, var(--ac) 60%, transparent); transition: transform .15s, box-shadow .15s; text-decoration: none }
@@ -490,18 +490,18 @@ const productSchema = {
     50% { box-shadow: 0 10px 24px -8px color-mix(in oklab, var(--ac) 60%, transparent), 0 0 0 14px color-mix(in oklab, var(--ac) 0%, transparent) }
   }
   /* TOPBAR */
-  .topbar { background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 700; padding: 9px 12px }
-  .topbar b { color: color-mix(in oklab, var(--wine) 28%, white); font-weight: 800 }
+  .topbar { background: var(--wine); color: var(--wine-foreground); font-size: 12.5px; font-weight: 700; padding: 9px 12px }
+  .topbar b { color: var(--gold); font-weight: 800 }
   .tb-rot { position: relative; height: 18px; overflow: hidden; max-width: 640px; margin: 0 auto }
   .tb-item { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; opacity: 0; transform: translateY(-110%); transition: opacity .5s ease, transform .55s cubic-bezier(.16, 1, .3, 1) }
   .tb-item.on { opacity: 1; transform: translateY(0) }
   .tb-item.out { opacity: 0; transform: translateY(110%) }
   .tb-item .ic { width: 14px; height: 14px; flex: 0 0 auto }
 
-  .nav { position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, .92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border) }
+  .nav { position: sticky; top: 0; z-index: 40; background: color-mix(in oklab, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border) }
   .nav .wrap { display: flex; align-items: center; justify-content: center; height: 62px }
   .brand { font-family: var(--serif); font-size: 27px; font-weight: 600; letter-spacing: -.02em }
-  .brand span { color: var(--ac) }
+  .brand span { color: var(--gold) }
 
   /* HERO */
   .hero { padding: 24px 0 8px }
@@ -509,34 +509,40 @@ const productSchema = {
   @media (max-width: 680px) { .hero-grid { grid-template-columns: 1fr; gap: 14px } }
   @media (min-width: 681px) and (max-width: 900px) { .hero-grid { grid-template-columns: .82fr 1fr; gap: 22px } }
   .hero-img-wrap { position: relative }
-  .hero-img-wrap img {
-    width: 100%; border-radius: 22px; aspect-ratio: 1/1; object-fit: cover;
-    box-shadow:
-      0 2px 4px -2px color-mix(in oklab, var(--ac) 25%, transparent),
-      0 12px 20px -10px color-mix(in oklab, var(--ac) 35%, transparent),
-      0 32px 64px -28px color-mix(in oklab, var(--ac) 55%, transparent);
+  .hero-img-wrap::before {
+    content: ""; position: absolute; inset: -8%; z-index: 0; border-radius: 50%;
+    background: radial-gradient(ellipse at center, color-mix(in oklab, var(--gold) 16%, transparent) 0%, transparent 70%);
   }
-  .disc-badge { position: absolute; top: 14px; left: 14px; width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(140deg, var(--ac), var(--ac-d)); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 12px 26px -8px color-mix(in oklab, var(--ac) 75%, transparent); border: 2px solid rgba(255, 255, 255, .55) }
+  .hero-img-wrap img {
+    position: relative; z-index: 1;
+    width: 100%; border-radius: 22px; aspect-ratio: 1/1; object-fit: cover;
+    outline: 1px solid color-mix(in oklab, var(--gold) 25%, transparent); outline-offset: -1px;
+    box-shadow:
+      0 2px 4px -2px color-mix(in oklab, var(--gold) 30%, transparent),
+      0 12px 20px -10px color-mix(in oklab, var(--gold) 35%, transparent),
+      0 32px 64px -28px color-mix(in oklab, var(--gold) 40%, transparent);
+  }
+  .disc-badge { position: absolute; top: 14px; left: 14px; z-index: 2; width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(140deg, var(--ac), var(--ac-d)); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 12px 26px -8px color-mix(in oklab, var(--ac) 75%, transparent); border: 2px solid color-mix(in oklab, var(--gold) 55%, transparent) }
   .disc-badge b { font-family: var(--serif); font-size: 20px; font-weight: 600; line-height: 1 }
   .disc-badge span { font-size: 8px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-top: 2px; opacity: .95 }
   .rate-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 10px; flex-wrap: wrap }
   .h1 { font-family: var(--serif); font-size: 34px; line-height: 1.06; font-weight: 600; letter-spacing: -.02em; margin-bottom: 8px }
-  .h1 em { color: var(--ac-d); font-style: italic }
+  .h1 em { color: var(--gold); font-style: italic }
   @media (max-width: 680px) { .h1 { font-size: 27px } }
   @media (min-width: 681px) and (max-width: 900px) { .h1 { font-size: 29px } }
   .sub { font-size: 14.5px; color: var(--muted); line-height: 1.45; margin-bottom: 14px; max-width: 46ch }
-  .kit-lbl { font-size: 12px; font-weight: 800; color: var(--ac-d); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px }
+  .kit-lbl { font-size: 12px; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px }
   .price-row { display: flex; align-items: baseline; gap: 12px }
-  .price-now { font-family: var(--serif); font-size: 42px; font-weight: 600; color: var(--ac-d); letter-spacing: -.02em }
+  .price-now { font-family: var(--serif); font-size: 42px; font-weight: 600; color: var(--gold); letter-spacing: -.02em }
   .price-old { font-size: 18px; color: var(--muted); text-decoration: line-through }
   .price-hint { font-size: 12.5px; color: var(--ok); font-weight: 700; margin: 3px 0 14px; display: flex; align-items: center; gap: 6px }
 
   /* KIT SELECTOR (do modelo 62 do template) */
   .ksel { margin: 10px 0 22px }
   .of-kits { display: flex; flex-direction: column; gap: 10px }
-  .of-kit { position: relative; display: flex; align-items: center; gap: 12px; padding: 14px; background: #fff; border: 2px solid var(--border); border-radius: 16px; cursor: pointer; text-align: left; font-family: inherit; transition: .18s; width: 100% }
-  .of-kit:hover { border-color: var(--ac) }
-  .of-kit.on { border-color: var(--ac); background: linear-gradient(180deg, var(--ac-l), #fff); box-shadow: 0 12px 26px -12px color-mix(in oklab, var(--ac) 60%, transparent) }
+  .of-kit { position: relative; display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--porc); border: 2px solid var(--border); border-radius: 16px; cursor: pointer; text-align: left; font-family: inherit; transition: .18s; width: 100% }
+  .of-kit:hover { border-color: var(--gold) }
+  .of-kit.on { border-color: var(--gold); background: linear-gradient(180deg, var(--ac-l), var(--porc)); box-shadow: 0 12px 26px -12px color-mix(in oklab, var(--ac) 60%, transparent) }
   .of-kit .radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); flex: none; position: relative; transition: .2s }
   .of-kit.on .radio { border-color: var(--ac); background: var(--ac) }
   .of-kit.on .radio::after { content: ""; position: absolute; inset: 4px; background: #fff; border-radius: 50% }
@@ -554,14 +560,14 @@ const productSchema = {
   .of-kit .kname { display: block; font-weight: 800; font-size: 14px; color: var(--ink); line-height: 1.15 }
   .of-kit .kper { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; margin-top: 2px }
   .of-kit .kprice { text-align: right; flex: none }
-  .of-kit .kprice b { display: block; font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--ac-d); line-height: 1 }
+  .of-kit .kprice b { display: block; font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--gold); line-height: 1 }
   .of-kit .kprice s { display: block; font-size: 11px; color: var(--muted); margin-top: 2px }
-  .of-kit .tag { position: absolute; top: -8px; left: 14px; background: linear-gradient(135deg, var(--ac), var(--ac-d)); color: #fff; font-size: 9px; font-weight: 900; letter-spacing: .06em; padding: 3px 10px; border-radius: 100px; box-shadow: 0 5px 12px -3px color-mix(in oklab, var(--ac) 85%, transparent); text-transform: uppercase }
+  .of-kit .tag { position: absolute; top: -8px; left: 14px; background: linear-gradient(135deg, var(--ac), var(--ac-d)); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: .06em; padding: 3px 10px; border-radius: 100px; box-shadow: 0 5px 12px -3px color-mix(in oklab, var(--ac) 85%, transparent); text-transform: uppercase }
 
 
   .trust-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 8px; margin-top: 16px }
   .trust-row div { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; color: var(--muted); font-weight: 600 }
-  .trust-row .ico { width: 28px; height: 28px; border-radius: 8px; background: var(--ac-l); display: flex; align-items: center; justify-content: center; color: var(--ac-d) }
+  .trust-row .ico { width: 28px; height: 28px; border-radius: 8px; background: var(--ac-l); display: flex; align-items: center; justify-content: center; color: var(--gold) }
 
   .sec { padding: 42px 0 }
   .sec h2 { font-family: var(--serif); font-size: 28px; font-weight: 600; text-align: center; letter-spacing: -.02em; margin-bottom: 6px }
@@ -569,8 +575,8 @@ const productSchema = {
 
   /* OCASIÕES IDEAIS */
   .occ-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 640px; margin: 0 auto 22px }
-  .occ { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 108px; padding: 16px 10px; border-radius: 16px; background: #fff; border: 1px solid var(--border); box-shadow: 0 10px 24px -18px rgba(0, 0, 0, .2) }
-  .occ .ic { width: 22px; height: 22px; color: var(--ac-d) }
+  .occ { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 108px; padding: 16px 10px; border-radius: 16px; background: var(--porc); border: 1px solid var(--border); box-shadow: 0 10px 24px -18px color-mix(in oklab, var(--gold) 14%, transparent) }
+  .occ .ic { width: 22px; height: 22px; color: var(--gold) }
   .occ span { font-size: 12px; font-weight: 700; color: var(--ink); text-align: center; line-height: 1.25 }
 
   /* VIDEO MARQUEE */
@@ -591,55 +597,55 @@ const productSchema = {
   .scn h1, .scn h2, .scn h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; letter-spacing: -.01em }
   .sv { position: relative; width: min(100%, 560px); margin: 0 auto; height: min(78svh, 600px); overflow: hidden; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center }
   #scn-passos { padding: 42px 16px 0 }
-  .ps-sv { background: var(--porc); box-shadow: 0 20px 50px -24px color-mix(in oklab, var(--ac) 50%, transparent) }
+  .ps-sv { background: var(--porc); box-shadow: 0 20px 50px -24px color-mix(in oklab, var(--gold) 30%, transparent) }
   .ps-tint { position: absolute; inset: 0; pointer-events: none; transition: opacity .5s ease }
-  .ps-tint-1 { background: radial-gradient(75% 60% at 50% 8%, color-mix(in oklab, var(--wine) 10%, white) 0%, transparent 75%); opacity: var(--a1, 0) }
-  .ps-tint-2 { background: radial-gradient(75% 60% at 50% 8%, color-mix(in oklab, var(--wine) 16%, white) 0%, transparent 75%); opacity: var(--a2, 0) }
-  .ps-tint-3 { background: radial-gradient(75% 60% at 50% 8%, color-mix(in oklab, var(--wine) 8%, white) 0%, transparent 75%); opacity: var(--a3, 0) }
+  .ps-tint-1 { background: radial-gradient(75% 60% at 50% 8%, color-mix(in oklab, var(--gold) 10%, var(--porc)) 0%, transparent 75%); opacity: var(--a1, 0) }
+  .ps-tint-2 { background: radial-gradient(75% 60% at 50% 8%, color-mix(in oklab, var(--gold) 16%, var(--porc)) 0%, transparent 75%); opacity: var(--a2, 0) }
+  .ps-tint-3 { background: radial-gradient(75% 60% at 50% 8%, color-mix(in oklab, var(--gold) 8%, var(--porc)) 0%, transparent 75%); opacity: var(--a3, 0) }
   .ps-rail { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 0; height: 200px }
   .ps-rail-track { position: relative; width: 2px; flex: 1; background: var(--line); border-radius: 2px; overflow: hidden }
-  .ps-rail-fill { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--ac); transform-origin: top; transform: scaleY(var(--f, 0)); transition: transform .45s ease }
+  .ps-rail-fill { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--gold); transform-origin: top; transform: scaleY(var(--f, 0)); transition: transform .45s ease }
   /* Visual continua 26px (não cabe maior no rail), mas o ::before estende a
      área de toque real pra 44x44 — mesma técnica do .vl-dots abaixo. */
-  .ps-dot { position: relative; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: .62rem; font-weight: 800; color: var(--muted); font-family: var(--sans); z-index: 2; transition: all .3s; cursor: pointer; padding: 0 }
+  .ps-dot { position: relative; width: 26px; height: 26px; border-radius: 50%; background: var(--porc); border: 1.5px solid var(--line); display: grid; place-items: center; font-size: .62rem; font-weight: 800; color: var(--muted); font-family: var(--sans); z-index: 2; transition: all .3s; cursor: pointer; padding: 0 }
   .ps-dot::before { content: ""; position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%) }
   .ps-dot.on { background: var(--ac); border-color: var(--ac); color: #fff; box-shadow: 0 0 0 5px color-mix(in oklab, var(--ac) 18%, transparent) }
   .ps-act { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 34px 30px 30px 52px; gap: 10px; opacity: var(--av, 0); transform: translateX(calc((1 - var(--av, 0)) * var(--d, 1) * 62%)); pointer-events: none; transition: opacity .5s cubic-bezier(.4, 0, .2, 1), transform .55s cubic-bezier(.16, 1, .3, 1) }
   .ps-act-1 { --av: var(--a1, 0); --d: var(--d1, 1) } .ps-act-2 { --av: var(--a2, 0); --d: var(--d2, 1) } .ps-act-3 { --av: var(--a3, 0); --d: var(--d3, 1) }
-  .ps-eyebrow { font-size: .66rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--ac-d) }
+  .ps-eyebrow { font-size: .66rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--gold) }
   .ps-eyebrow b { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ac); color: #fff; font-size: .7rem; margin-right: 6px; vertical-align: middle }
-  .ps-act img { width: min(40vw, 190px); height: min(34svh, 240px); object-fit: contain; filter: drop-shadow(0 20px 30px color-mix(in oklab, var(--ac) 22%, transparent)); transform: scale(calc(.88 + var(--av, 0)*.12)) rotateY(calc((1 - var(--av, 0)) * var(--d, 1) * -22deg)) }
+  .ps-act img { width: min(40vw, 190px); height: min(34svh, 240px); object-fit: contain; filter: drop-shadow(0 20px 30px color-mix(in oklab, var(--gold) 25%, transparent)); transform: scale(calc(.88 + var(--av, 0)*.12)) rotateY(calc((1 - var(--av, 0)) * var(--d, 1) * -22deg)) }
   .ps-fig { position: relative; display: grid; place-items: center; width: 100%; perspective: 900px }
   .ps-fig img { position: relative; z-index: 2 }
   .ps-glow { position: absolute; width: min(58vw, 300px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, 0) 68%) }
-  .ps-fig::after { content: ""; position: absolute; bottom: -8px; width: 36%; height: 14px; border-radius: 50%; background: radial-gradient(ellipse, color-mix(in oklab, var(--ac) 30%, transparent), transparent 70%); filter: blur(2px); transform: scaleX(calc(.7 + var(--av, 0)*.3)) }
+  .ps-fig::after { content: ""; position: absolute; bottom: -8px; width: 36%; height: 14px; border-radius: 50%; background: radial-gradient(ellipse, color-mix(in oklab, var(--gold) 35%, transparent), transparent 70%); filter: blur(2px); transform: scaleX(calc(.7 + var(--av, 0)*.3)) }
   .ps-part { position: absolute; border-radius: 50%; pointer-events: none; z-index: 1 }
   .ps-pa { width: 13px; height: 13px; left: 15%; top: 10%; transform: translateY(calc(var(--av, 0)*-48px)) }
   .ps-pb { width: 8px; height: 8px; right: 17%; top: 24%; transform: translateY(calc(var(--av, 0)*-84px)) }
   .ps-pc { width: 6px; height: 6px; left: 25%; bottom: 4%; transform: translateY(calc(var(--av, 0)*-30px)) }
   .ps-pd { width: 10px; height: 10px; right: 23%; bottom: 14%; transform: translateY(calc(var(--av, 0)*-64px)) }
-  .ps-act-1 .ps-part { background: #fff; box-shadow: inset -2px -2px 4px color-mix(in oklab, var(--ac) 30%, transparent), 0 2px 6px rgba(122, 74, 51, .14) }
+  .ps-act-1 .ps-part { background: color-mix(in oklab, var(--gold) 25%, white); box-shadow: inset -2px -2px 4px color-mix(in oklab, var(--ac) 30%, transparent), 0 2px 6px rgba(0, 0, 0, .25) }
   .ps-act-2 .ps-part { background: var(--ac); opacity: .45 }
-  .ps-act-3 .ps-part { background: #6ec1ea; opacity: .55 }
+  .ps-act-3 .ps-part { background: var(--gold); opacity: .55 }
   .ps-act h3 { font-size: clamp(1.6rem, 6.6vw, 2.4rem) }
-  .ps-act h3 em { color: var(--ac-d) }
+  .ps-act h3 em { color: var(--gold) }
   .ps-act p { color: var(--muted); max-width: 420px; font-size: clamp(.9rem, 3.5vw, 1.02rem) }
   .ps-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 4px }
-  .ps-chips span { padding: 6px 13px; border-radius: 100px; background: #fff; border: 1px solid var(--line); font-size: .7rem; font-weight: 700; color: var(--ink); box-shadow: 0 4px 10px color-mix(in oklab, var(--ac) 10%, transparent) }
-  .ps-chips span::before { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--ac); margin-right: 7px; vertical-align: 2px }
+  .ps-chips span { padding: 6px 13px; border-radius: 100px; background: var(--porc); border: 1px solid var(--line); font-size: .7rem; font-weight: 700; color: var(--ink); box-shadow: 0 4px 10px color-mix(in oklab, var(--gold) 10%, transparent) }
+  .ps-chips span::before { content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); margin-right: 7px; vertical-align: 2px }
   .ps-chips span:nth-child(1) { transform: translateY(calc((1 - var(--av, 0))*20px)) }
   .ps-chips span:nth-child(2) { transform: translateY(calc((1 - var(--av, 0))*36px)) }
   .ps-chips span:nth-child(3) { transform: translateY(calc((1 - var(--av, 0))*52px)) }
   @keyframes spin { to { rotate: 360deg } }
-  .ps-ring { position: absolute; inset: 0; margin: auto; width: min(64vw, 320px); aspect-ratio: 1; border-radius: 50%; border: 1.5px dashed color-mix(in oklab, var(--ac) 28%, transparent); animation: spin 40s linear infinite; pointer-events: none }
-  .ps-ring::before { content: ""; position: absolute; top: -5px; left: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--ac); box-shadow: 0 0 10px color-mix(in oklab, var(--ac) 80%, transparent) }
-  .ps-tag { position: absolute; z-index: 3; max-width: 118px; padding: 8px 11px; border-radius: 14px; text-align: left; background: rgba(255, 255, 255, .82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--line); box-shadow: 0 10px 24px color-mix(in oklab, var(--ac) 14%, transparent); font-size: .58rem; font-weight: 600; line-height: 1.35; color: var(--muted); opacity: clamp(0, calc(var(--av, 0)*2.2 - .55), 1) }
-  .ps-tag b { display: block; color: var(--ac-d); font-size: .72rem; margin-bottom: 2px }
+  .ps-ring { position: absolute; inset: 0; margin: auto; width: min(64vw, 320px); aspect-ratio: 1; border-radius: 50%; border: 1.5px dashed color-mix(in oklab, var(--gold) 28%, transparent); animation: spin 40s linear infinite; pointer-events: none }
+  .ps-ring::before { content: ""; position: absolute; top: -5px; left: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px color-mix(in oklab, var(--gold) 80%, transparent) }
+  .ps-tag { position: absolute; z-index: 3; max-width: 118px; padding: 8px 11px; border-radius: 14px; text-align: left; background: var(--porc); border: 1px solid var(--line); box-shadow: 0 10px 24px color-mix(in oklab, var(--gold) 14%, transparent); font-size: .58rem; font-weight: 600; line-height: 1.35; color: var(--muted); opacity: clamp(0, calc(var(--av, 0)*2.2 - .55), 1) }
+  .ps-tag b { display: block; color: var(--gold); font-size: .72rem; margin-bottom: 2px }
   .ps-tag-l { top: 25%; left: 4% }
   .ps-tag-r { top: 25%; right: 4% }
 
   /* VIDEO PRINCIPAL */
-  .mainvid { text-align: center; padding: 22px 0 38px; background: linear-gradient(180deg, var(--ac-l), #fff) }
+  .mainvid { text-align: center; padding: 22px 0 38px; background: linear-gradient(180deg, var(--porc), var(--bg)) }
   .mainvid .box { position: relative; max-width: 420px; margin: 0 auto; border-radius: 20px; overflow: visible; box-shadow: 0 26px 54px -26px rgba(0, 0, 0, .55); background: #000 }
   .mainvid video { width: 100%; display: block; border-radius: 20px }
   .mainvid .hint { margin-top: 12px; font-size: 12.5px; color: var(--muted); font-weight: 600; display: inline-flex; align-items: center; gap: 6px }
@@ -651,7 +657,7 @@ const productSchema = {
   .mainvid .box.playing .mv-play { opacity: 0; pointer-events: none }
   .vbadge { position: absolute; z-index: 6; max-width: 66%; opacity: 0; transform: translateY(16px) scale(.92); animation: vb-in .7s cubic-bezier(.16, 1, .3, 1) forwards; pointer-events: none }
   .mainvid .box.playing .vbadge { opacity: 0 !important; transition: opacity .3s; animation: none }
-  .vb-glass { display: inline-flex; align-items: center; gap: 9px; padding: 8px 14px 8px 8px; border-radius: 15px; background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(16px) saturate(1.5); backdrop-filter: blur(16px) saturate(1.5); border: 1px solid rgba(255, 255, 255, .85); box-shadow: 0 14px 34px -12px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .7); animation: vbf 5.4s ease-in-out infinite }
+  .vb-glass { display: inline-flex; align-items: center; gap: 9px; padding: 8px 14px 8px 8px; border-radius: 15px; background: var(--porc); border: 1px solid var(--border); box-shadow: 0 14px 34px -12px rgba(0, 0, 0, .5); animation: vbf 5.4s ease-in-out infinite }
   .vb-ic { width: 30px; height: 30px; border-radius: 10px; background: linear-gradient(140deg, var(--ac), var(--ac-d)); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; box-shadow: 0 6px 14px -4px rgba(0, 0, 0, .55) }
   .vb-ic svg { width: 16px; height: 16px; color: #fff }
   .vbadge b { font-size: 12.5px; font-weight: 800; line-height: 1.12; letter-spacing: -.01em; color: var(--ink) }
@@ -668,31 +674,31 @@ const productSchema = {
   /* DEPOIMENTOS — grid de reviews COM foto anexada (mescla dos prints antigos) */
   .revs-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 900px; margin: 0 auto }
   @media (max-width: 640px) { .revs-grid { grid-template-columns: 1fr; max-width: 400px } }
-  .rev { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: 0 10px 30px -22px rgba(0, 0, 0, .2); display: flex; flex-direction: column; gap: 8px }
+  .rev { background: var(--porc); border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: 0 10px 30px -22px rgba(0, 0, 0, .4); display: flex; flex-direction: column; gap: 8px }
   .rev .top { display: flex; align-items: center; justify-content: space-between }
   .rev .nm { font-weight: 800; font-size: 14px; color: var(--ink) }
-  .rev .vf { font-size: 11px; color: var(--ok); font-weight: 700; display: inline-flex; align-items: center; gap: 4px; background: #eafaf0; padding: 3px 8px; border-radius: 100px }
-  .rev p { font-size: 13.5px; color: #4a3540; line-height: 1.55 }
-  .rev .rev-pic { width: 100%; margin-top: 4px; border-radius: 12px; border: 1px solid var(--border); aspect-ratio: 1; object-fit: cover; background: #f4f0fa }
+  .rev .vf { font-size: 11px; color: var(--ok); font-weight: 700; display: inline-flex; align-items: center; gap: 4px; background: color-mix(in oklab, var(--ok) 16%, var(--porc)); padding: 3px 8px; border-radius: 100px }
+  .rev p { font-size: 13.5px; color: var(--ink); line-height: 1.55 }
+  .rev .rev-pic { width: 100%; margin-top: 4px; border-radius: 12px; border: 1px solid var(--border); aspect-ratio: 1; object-fit: cover; background: var(--porc) }
 
   /* GARANTIA */
   .guar-wrap { position: relative; max-width: 640px; margin: 0 auto }
-  .guar { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 26px; text-align: center; box-shadow: 0 14px 40px -28px rgba(0, 0, 0, .3) }
-  .guar .seal { width: 66px; height: 66px; border-radius: 50%; background: var(--ac-l); display: flex; align-items: center; justify-content: center; color: var(--ac-d); margin: 0 auto 12px }
+  .guar { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; background: var(--porc); border: 1px solid var(--border); border-radius: 20px; padding: 26px; text-align: center; box-shadow: 0 14px 40px -28px rgba(0, 0, 0, .4) }
+  .guar .seal { width: 66px; height: 66px; border-radius: 50%; background: var(--ac-l); display: flex; align-items: center; justify-content: center; color: var(--gold); margin: 0 auto 12px }
   .guar .seal .ic { width: 32px; height: 32px }
   .guar h3 { font-family: var(--serif); font-size: 22px; font-weight: 600; margin-bottom: 8px }
   .guar h3 span { display: inline-block; color: #fff; background: linear-gradient(135deg, var(--ac), var(--ac-d)); padding: 2px 13px; border-radius: 100px; font-family: var(--sans); font-size: 18px; font-weight: 800; vertical-align: middle }
-  .guar p { color: #5f4550; font-size: 14px; line-height: 1.6 }
-  .guar p b { color: var(--ac-d) }
+  .guar p { color: var(--muted); font-size: 14px; line-height: 1.6 }
+  .guar p b { color: var(--gold) }
   /* ANCORA DE VALOR */
-  .value { background: linear-gradient(180deg, var(--ac-l), #fff) }
+  .value { background: linear-gradient(180deg, var(--porc), var(--bg)) }
   .val-emote { font-family: var(--serif); font-size: 24px; font-weight: 600; text-align: center; max-width: 24ch; margin: 0 auto 26px; line-height: 1.32; color: var(--ink) }
-  .val-emote em { color: var(--ac-d); font-style: italic }
+  .val-emote em { color: var(--gold); font-style: italic }
   .vl-sv { height: min(42svh, 300px); min-height: 260px; background: none; box-shadow: none }
   .vlb { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 22px; text-align: center; opacity: var(--bv, 0); transform: translateY(calc((1 - var(--bv, 0))*24px)); pointer-events: none; transition: opacity .45s ease, transform .45s cubic-bezier(.16, 1, .3, 1); gap: 8px }
-  .vl-ico { width: 62px; height: 62px; border-radius: 20px; background: #fff; border: 1px solid var(--border); display: grid; place-items: center; color: var(--ac-d); box-shadow: 0 10px 24px -12px color-mix(in oklab, var(--ac) 40%, transparent) }
+  .vl-ico { width: 62px; height: 62px; border-radius: 20px; background: var(--porc); border: 1px solid var(--border); display: grid; place-items: center; color: var(--gold); box-shadow: 0 10px 24px -12px color-mix(in oklab, var(--gold) 25%, transparent) }
   .vl-ico svg { width: 30px; height: 30px }
-  .vlb b { font-family: var(--serif); font-size: 40px; font-weight: 600; color: var(--ac-d); line-height: 1 }
+  .vlb b { font-family: var(--serif); font-size: 40px; font-weight: 600; color: var(--gold); line-height: 1 }
   .vl-lab { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em }
   .vlb p { color: var(--muted); max-width: 320px; font-size: 14px; line-height: 1.5 }
   .vl-dots { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 5 }
@@ -704,13 +710,13 @@ const productSchema = {
 
   /* FAQ */
   .faq-list { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px }
-  .faq-item { background: #fff; border: 1px solid var(--border); border-radius: 16px; overflow: hidden }
+  .faq-item { background: var(--porc); border: 1px solid var(--border); border-radius: 16px; overflow: hidden }
   .faq-item summary { list-style: none; cursor: pointer; padding: 16px 44px 16px 18px; font-size: 14.5px; font-weight: 700; color: var(--ink); position: relative; display: flex; align-items: center; min-height: 44px }
   .faq-item summary::-webkit-details-marker { display: none }
-  .faq-ic { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--ac); transition: transform .25s cubic-bezier(.16,1,.3,1); flex: none }
+  .faq-ic { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--gold); transition: transform .25s cubic-bezier(.16,1,.3,1); flex: none }
   .faq-item[open] .faq-ic { transform: translateY(-50%) rotate(45deg) }
   .faq-body { padding: 0 18px 16px; font-size: 13.5px; color: var(--muted); line-height: 1.6 }
-  .faq-item summary:focus-visible { outline: 2px solid var(--ac); outline-offset: -2px; border-radius: 12px }
+  .faq-item summary:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 12px }
 
   /* FOOTER */
   .ft { background: color-mix(in oklab, var(--wine) 90%, black); color: color-mix(in oklab, var(--wine) 25%, white); margin-top: 0 }
@@ -724,19 +730,19 @@ const productSchema = {
   .ft a:hover { color: #fff }
   .ft-badges { display: flex; gap: 8px; flex-wrap: wrap }
   .ft-badges span { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .1); padding: 6px 11px; border-radius: 100px }
-  .ft-bottom { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid rgba(255, 255, 255, .1); margin-top: 32px; padding: 16px 18px 88px; font-size: 11.5px; color: #8f7d96 }
+  .ft-bottom { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid rgba(255, 255, 255, .1); margin-top: 32px; padding: 16px 18px 88px; font-size: 11.5px; color: color-mix(in oklab, var(--wine) 45%, white) }
   @media (min-width: 721px) { .ft-bottom { padding-bottom: 24px } }
 
   /* STICKY CTA */
-  .stickycta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px); border-top: 1px solid var(--border); box-shadow: 0 -8px 24px -18px rgba(0, 0, 0, .3); transform: translateY(115%); transition: transform .35s cubic-bezier(.16, 1, .3, 1); will-change: transform }
+  .stickycta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: color-mix(in oklab, var(--bg) 92%, transparent); backdrop-filter: blur(10px); border-top: 1px solid var(--border); box-shadow: 0 -8px 24px -18px rgba(0, 0, 0, .5); transform: translateY(115%); transition: transform .35s cubic-bezier(.16, 1, .3, 1); will-change: transform }
   .stickycta.show { transform: translateY(0) }
   .stickycta.is-covered { visibility: hidden }
   .stickycta .wrap { display: flex; align-items: center; gap: 14px; padding: 11px 18px }
   .sk-kits { display: flex; gap: 6px; flex: 1; min-width: 0 }
-  .sk-kit { flex: 1; border: 1.5px solid var(--border); background: #fff; border-radius: 10px; padding: 6px 4px; cursor: pointer; font-family: inherit; line-height: 1.12; transition: .15s; text-align: center }
+  .sk-kit { flex: 1; border: 1.5px solid var(--border); background: var(--porc); border-radius: 10px; padding: 6px 4px; cursor: pointer; font-family: inherit; line-height: 1.12; transition: .15s; text-align: center }
   .sk-kit span { display: block; font-size: 10px; font-weight: 700; color: var(--muted) }
-  .sk-kit b { display: block; font-size: 12.5px; color: var(--ac-d); font-weight: 800; margin-top: 1px }
-  .sk-kit.on { border-color: var(--ac); background: var(--ac-l) }
+  .sk-kit b { display: block; font-size: 12.5px; color: var(--gold); font-weight: 800; margin-top: 1px }
+  .sk-kit.on { border-color: var(--gold); background: var(--ac-l) }
   .stickycta .btn { white-space: nowrap; padding: 13px 18px; font-size: 14px }
 
   /* ── FOCO DE TECLADO ────────────────────────────────────────────────────
@@ -749,7 +755,7 @@ const productSchema = {
   .vidcard:focus-visible,
   .ft a:focus-visible,
   .nav a:focus-visible {
-    outline: 2px solid var(--ac);
+    outline: 2px solid var(--gold);
     outline-offset: 3px;
   }
 
@@ -770,10 +776,10 @@ const productSchema = {
   /* ═════════════════════════ v6 · polish visual ═════════════════════════ */
 
   /* Hero rating badge premium — score em serif, meta em small caps */
-  .hero-rating { display: inline-flex; align-items: center; gap: 12px; padding: 8px 14px 8px 10px; margin-bottom: 14px; background: color-mix(in oklab, var(--ac-l) 55%, white); border: 1px solid color-mix(in oklab, var(--ac) 20%, transparent); border-radius: 100px; box-shadow: 0 8px 24px -18px color-mix(in oklab, var(--ac-d) 35%, transparent); max-width: fit-content }
-  .hero-rating .hr-score { font: 700 24px/1 var(--serif); color: var(--ac-d); letter-spacing: -.02em; padding: 4px 10px; background: #fff; border-radius: 100px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ac) 12%, transparent) }
+  .hero-rating { display: inline-flex; align-items: center; gap: 12px; padding: 8px 14px 8px 10px; margin-bottom: 14px; background: var(--porc); border: 1px solid var(--border); border-radius: 100px; box-shadow: 0 8px 24px -18px color-mix(in oklab, var(--gold) 30%, transparent); max-width: fit-content }
+  .hero-rating .hr-score { font: 700 24px/1 var(--serif); color: var(--gold); letter-spacing: -.02em; padding: 4px 10px; background: color-mix(in oklab, var(--gold) 10%, var(--porc)); border-radius: 100px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--gold) 18%, transparent) }
   .hero-rating .hr-mid { display: inline-flex; flex-direction: column; gap: 3px }
-  .hero-rating .hr-mid .stars { display: inline-flex; gap: 1px; color: var(--gold); line-height: 1 }
+  .hero-rating .hr-mid .stars { display: inline-flex; gap: 1px; color: var(--star); line-height: 1 }
   .hero-rating .hr-mid .stars .ic { width: 13px; height: 13px }
   .hero-rating .hr-meta { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .02em; text-transform: uppercase }
   .hero-rating .hr-meta b { color: var(--ink); font-weight: 800 }
@@ -788,28 +794,28 @@ const productSchema = {
     .mainvid .mv-side h2 { text-align: left; margin: 0 0 12px; font-size: clamp(24px, 3vw, 30px) }
     .mainvid .mv-side .lead { text-align: left; max-width: 42ch; margin: 0 }
     .mainvid .mv-quotes { margin-top: 22px; display: flex; flex-direction: column; gap: 14px }
-    .mainvid .mv-quotes .mvq { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; background: #fff; box-shadow: 0 12px 32px -22px color-mix(in oklab, var(--ac-d) 32%, transparent); border: 1px solid color-mix(in oklab, var(--ac) 8%, transparent) }
-    .mainvid .mv-quotes .mvq .qic { flex: none; width: 34px; height: 34px; border-radius: 100px; background: color-mix(in oklab, var(--ac) 12%, white); display: grid; place-items: center; color: var(--ac-d) }
+    .mainvid .mv-quotes .mvq { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; background: var(--porc); box-shadow: 0 12px 32px -22px rgba(0, 0, 0, .4); border: 1px solid var(--border) }
+    .mainvid .mv-quotes .mvq .qic { flex: none; width: 34px; height: 34px; border-radius: 100px; background: color-mix(in oklab, var(--gold) 14%, var(--porc)); display: grid; place-items: center; color: var(--gold) }
     .mainvid .mv-quotes .mvq p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--ink) }
-    .mainvid .mv-quotes .mvq p b { color: var(--ac-d) }
+    .mainvid .mv-quotes .mvq p b { color: var(--gold) }
     .mainvid .box { margin: 0 }
   }
 
   /* Cards de review — elevação + hover sutil */
   .rev { transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s cubic-bezier(.16,1,.3,1) }
-  .rev.rev-photo { box-shadow: 0 12px 34px -22px color-mix(in oklab, var(--ac-d) 50%, transparent), 0 2px 4px -2px rgba(0, 0, 0, .05); border-color: color-mix(in oklab, var(--ac) 10%, var(--border)) }
+  .rev.rev-photo { box-shadow: 0 12px 34px -22px rgba(0, 0, 0, .5), 0 2px 4px -2px rgba(0, 0, 0, .3); border-color: color-mix(in oklab, var(--gold) 12%, var(--border)) }
   @media (hover: hover) {
-    .rev.rev-photo:hover { transform: translateY(-3px); box-shadow: 0 22px 44px -22px color-mix(in oklab, var(--ac-d) 55%, transparent), 0 4px 8px -4px rgba(0, 0, 0, .06) }
+    .rev.rev-photo:hover { transform: translateY(-3px); box-shadow: 0 22px 44px -22px color-mix(in oklab, var(--gold) 20%, black), 0 4px 8px -4px rgba(0, 0, 0, .4) }
   }
 
   /* Âncora de valor — big-number statement */
   .val-hero { text-align: center; max-width: 24ch; margin: 0 auto 26px }
-  .val-hero .vh-eyebrow { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ac-d); margin-bottom: 6px }
-  .val-hero .vh-num { display: block; font: 700 clamp(56px, 12vw, 88px) / 1 var(--serif); color: var(--ac-d); letter-spacing: -.03em; margin: 4px 0 6px }
+  .val-hero .vh-eyebrow { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px }
+  .val-hero .vh-num { display: block; font: 700 clamp(56px, 12vw, 88px) / 1 var(--serif); color: var(--gold); letter-spacing: -.03em; margin: 4px 0 6px }
   .val-hero .vh-num small { font: 500 .32em/1 var(--serif); color: var(--muted); letter-spacing: 0; vertical-align: 1.4em }
   .val-hero .vh-sub { display: block; font: 500 15px/1.4 var(--sans); color: var(--muted) }
   .val-hero .vh-sub b { color: var(--ink) }
-  .val-hero .vh-rule { display: block; height: 1px; width: 60px; margin: 18px auto 0; background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--ac) 55%, transparent), transparent) }
+  .val-hero .vh-rule { display: block; height: 1px; width: 60px; margin: 18px auto 0; background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 55%, transparent), transparent) }
 
 
   /* FAQ chevron: rota 45→135deg (X) e easing mais suave */
