@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: "Corpo da requisição inválido." }), { status: 400 });
   }
 
-  const { kitIndex, cliente, endereco, frete, tracking, fragrance } = body || {};
+  const { kitIndex, cliente, endereco, frete, tracking, fragrance, fbp, fbc } = body || {};
   // Preço/quantidade sempre lido da tabela server-side via kitIndex validado.
   // NUNCA usar valor vindo do cliente diretamente.
   const kit = getKit(Number(kitIndex));
@@ -176,6 +176,12 @@ export const POST: APIRoute = async ({ request }) => {
       cliente,
       endereco,
       utmifyOrder,
+      // Capturados AGORA (é o navegador real do cliente fazendo esta requisição) —
+      // o webhook-pix.ts é chamado pela Korvex depois, sem esses dados, então
+      // precisa reler daqui pra mandar o Purchase pro Meta Conversions API.
+      meta: { fbp: typeof fbp === "string" ? fbp : null, fbc: typeof fbc === "string" ? fbc : null },
+      clientIp: getClientIp(request),
+      userAgent: request.headers.get("user-agent"),
       trackingCode: null,
       statusTimestamps: { pending: now },
       createdAt: now,

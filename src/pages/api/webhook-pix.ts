@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { kv } from "@vercel/kv";
 import { sendUtmifyOrder, utmifyDate, type UtmifyOrder } from "./_utmify";
+import { sendMetaCapiPurchase } from "./_meta-capi";
 import { sendOrderStatusEmail } from "../../lib/resend";
 import { SITE } from "../../config/site.config";
 
@@ -85,6 +86,30 @@ export const POST: APIRoute = async ({ request }) => {
       "paid",
       request.headers.get("host") || SITE.productionHost
     );
+  }
+
+  // ===== Meta Conversions API: Purchase server-side (só na transição pra "paid") =====
+  // Cobre o caso do cliente fechar a aba antes do polling em checkout.ts confirmar —
+  // aí o fbq('track', 'Purchase') do navegador nunca dispara. event_id = orderId,
+  // igual ao eventID usado no fbq do navegador, pro Meta deduplicar os dois envios.
+  if (internalStatus === "paid" && statusChanged) {
+    const order = current as any;
+    if (order?.offer && order?.cliente) {
+      await sendMetaCapiPurchase({
+        orderId: identifier,
+        value: Number(order.offer.amount ?? order.offer.kit?.price ?? 0),
+        productId: order.offer.id,
+        productName: order.offer.name,
+        cliente: order.cliente,
+        clientIp: order.clientIp ?? null,
+        userAgent: order.userAgent ?? null,
+        fbp: order.meta?.fbp ?? null,
+        fbc: order.meta?.fbc ?? null,
+        eventSourceUrl: `https://${request.headers.get("host") || SITE.productionHost}/`,
+      });
+    } else {
+      console.warn("[webhook-pix] pedido sem offer/cliente no KV (expirado?), Purchase não enviado ao Meta:", identifier);
+    }
   }
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 });

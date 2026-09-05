@@ -11,8 +11,17 @@ declare global {
   }
 }
 
-function trackPixel(event: string, params?: Record<string, unknown>) {
-  window.fbq?.("track", event, params);
+function trackPixel(event: string, params?: Record<string, unknown>, eventID?: string) {
+  if (eventID) window.fbq?.("track", event, params, { eventID });
+  else window.fbq?.("track", event, params);
+}
+
+// Cookies que o próprio pixel do Meta já grava no navegador (_fbp sempre, _fbc só
+// se o clique veio de um anúncio) — mandados pro servidor junto do pedido pra
+// melhorar o "match quality" do Purchase enviado via Conversions API (webhook-pix.ts).
+function getCookie(name: string): string | null {
+  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
 }
 
 function formatBRL(value: number) {
@@ -423,6 +432,8 @@ export function mountCheckout() {
           frete: selectedShippingId,
           fragrance: selectedFragrance,
           tracking: getStoredUtms(),
+          fbp: getCookie("_fbp"),
+          fbc: getCookie("_fbc"),
         }),
       });
       const data = await resp.json();
@@ -474,12 +485,15 @@ export function mountCheckout() {
         const data = await resp.json();
         if (data.status === "paid") {
           window.clearInterval(pollTimer);
+          // eventID = orderId — o MESMO id que o webhook-pix.ts usa como event_id
+          // no envio server-side (Meta Conversions API), pro Meta deduplicar os
+          // dois envios do Purchase em vez de contar a venda 2x.
           trackPixel("Purchase", {
             content_ids: [OFFER.id],
             content_type: "product",
             value: total,
             currency: "BRL",
-          });
+          }, orderId ?? undefined);
           document.querySelector("[data-success-order-id]")!.textContent = orderId;
           const trackLink = document.querySelector<HTMLAnchorElement>("[data-track-link]");
           if (trackLink) trackLink.href = `/rastrear-pedido?codigo=${orderId}`;
