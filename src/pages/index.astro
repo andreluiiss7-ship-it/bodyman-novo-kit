@@ -116,8 +116,8 @@ const productSchema = {
             <button type="button" role="radio" aria-checked={k.i === DEFAULT_KIT_INDEX ? "true" : "false"} class:list={["of-kit", { on: k.i === DEFAULT_KIT_INDEX }]} data-i={k.i}>
               {k.badge && <span class="tag">{k.badge}</span>}
               <span class="radio"></span>
-              <span class:list={["imgs", { "imgs-6": k.qty >= 6 }]}>
-                {(k.qty >= 6 ? [...kitThumbs, ...kitThumbs] : kitThumbs).map((img) => (
+              <span class:list={["imgs", { "imgs-6": k.qty >= 6, "imgs-1": k.qty === 1 }]}>
+                {(k.qty === 1 ? [vibrationThumb] : k.qty >= 6 ? [...kitThumbs, ...kitThumbs] : kitThumbs).map((img) => (
                   <img src={img.src} alt="" loading="lazy">
                 ))}
               </span>
@@ -238,9 +238,9 @@ const productSchema = {
         <h2 class="reveal">Quem já borrifou, aprovou</h2>
         <p class="lead reveal">Um kit pra alternar de fragrância conforme o momento — do dia a dia às ocasiões especiais.</p>
         <div class="mv-quotes reveal">
-          <div class="mvq"><span class="qic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><p>"Fixou o dia inteiro. Recebi elogio até de quem <b>nunca fala nada</b>."</p></div>
-          <div class="mvq"><span class="qic"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span><p>Troco de fragrância que nem troco de roupa — <b>nunca sou "aquele cheiro de sempre"</b>.</p></div>
-          <div class="mvq"><span class="qic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><p>Borrifo e esqueço — o cheiro que <b>continua trabalhando</b> por mim o dia todo.</p></div>
+          <div class="mvq tilt-card"><span class="qic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><p>"Fixou o dia inteiro. Recebi elogio até de quem <b>nunca fala nada</b>."</p></div>
+          <div class="mvq tilt-card"><span class="qic"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span><p>Troco de fragrância que nem troco de roupa — <b>nunca sou "aquele cheiro de sempre"</b>.</p></div>
+          <div class="mvq tilt-card"><span class="qic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><p>Borrifo e esqueço — o cheiro que <b>continua trabalhando</b> por mim o dia todo.</p></div>
         </div>
       </div>
       <div class="box" id="mv-box">
@@ -277,7 +277,7 @@ const productSchema = {
     <p class="lead reveal">Avaliações verificadas de compradores reais</p>
 
     <div class="revs-grid">
-      <div class="rev rev-photo reveal">
+      <div class="rev rev-photo reveal tilt-card">
         <div class="top">
           <span class="nm">a**a</span>
           <span class="vf"><svg class="ic" style="width:11px;height:11px"><use href="#i-check"/></svg> Compra verificada</span>
@@ -286,7 +286,7 @@ const productSchema = {
         <p>"Cara, não sei o que colocaram nesse troço, mas as mulheres do meu prédio ficam me parando no elevador só pra perguntar o perfume. Tô rindo, mas tô amando kkkk."</p>
         <img class="rev-pic" src={cliente1.src} width={cliente1.width} height={cliente1.height} alt="Foto anexada por a**a" loading="lazy">
       </div>
-      <div class="rev rev-photo reveal">
+      <div class="rev rev-photo reveal tilt-card">
         <div class="top">
           <span class="nm">m**a s**s</span>
           <span class="vf"><svg class="ic" style="width:11px;height:11px"><use href="#i-check"/></svg> Compra verificada</span>
@@ -295,7 +295,7 @@ const productSchema = {
         <p>"Borrifei de manhã, o cheiro ainda tava lá de noite. Pra mim isso já vale o preço todo."</p>
         <img class="rev-pic" src={cliente2.src} width={cliente2.width} height={cliente2.height} alt="Foto anexada por m**a s**s" loading="lazy">
       </div>
-      <div class="rev rev-photo reveal">
+      <div class="rev rev-photo reveal tilt-card">
         <div class="top">
           <span class="nm">r**o</span>
           <span class="vf"><svg class="ic" style="width:11px;height:11px"><use href="#i-check"/></svg> Compra verificada</span>
@@ -304,7 +304,7 @@ const productSchema = {
         <p>"Um colega perguntou se eu tinha trocado pra um importado. Só sorri e não respondi nada. Segredo é segredo."</p>
         <img class="rev-pic" src={cliente4.src} width={cliente4.width} height={cliente4.height} alt="Foto anexada por r**o" loading="lazy">
       </div>
-      <div class="rev rev-photo reveal">
+      <div class="rev rev-photo reveal tilt-card">
         <div class="top">
           <span class="nm">c**a p**a</span>
           <span class="vf"><svg class="ic" style="width:11px;height:11px"><use href="#i-check"/></svg> Compra verificada</span>
@@ -320,7 +320,7 @@ const productSchema = {
   <section class="sec value scn vl" id="scn-valor" style="--b1: 1; --b2: 0;"><div class="wrap">
     <div class="val-hero reveal">
       <span class="vh-eyebrow">Ficar cheiroso todo santo dia custa</span>
-      <span class="vh-num"><small>R$</small>0,38<small>/dia</small></span>
+      <span class="vh-num"><small>R$</small><span class="vh-num-val" data-countup="0.38">0,38</span><small>/dia</small></span>
       <span class="vh-sub">Menos que uma bala de hortelã — e o efeito <b>não passa despercebido</b>.</span>
       <span class="vh-rule" aria-hidden="true"></span>
     </div>
@@ -546,6 +546,10 @@ const productSchema = {
   .of-kit .imgs img:nth-child(3) { margin-left: -12px }
   .of-kit .imgs.imgs-6 img { width: 24px; height: 32px }
   .of-kit .imgs.imgs-6 img:nth-child(n+2) { margin-left: -13px }
+  .of-kit .imgs.imgs-1 img { width: 38px; height: 49px; margin: 0 8px 0 0 }
+  @keyframes price-pop { 0% { transform: scale(1) } 45% { transform: scale(1.1) } 100% { transform: scale(1) } }
+  .price-pop { display: inline-block; animation: price-pop .4s cubic-bezier(.16,1,.3,1) }
+  @media (prefers-reduced-motion: reduce) { .price-pop { animation: none } }
   .of-kit .kinfo { flex: 1; min-width: 0 }
   .of-kit .kname { display: block; font-weight: 800; font-size: 14px; color: var(--ink); line-height: 1.15 }
   .of-kit .kper { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; margin-top: 2px }
@@ -840,7 +844,13 @@ const productSchema = {
   // ── KIT SELECTOR ──────────────────────────────────────────────────────────
   // Coordena visual do hero + cards + sticky bar + estado no localStorage
   // (via setSelectedKit) — que o CheckoutModal e criar-pix.ts leem depois.
-  function selectKit(i: number) {
+  function pop(el: HTMLElement | null) {
+    if (!el) return;
+    el.classList.remove("price-pop");
+    void el.offsetWidth; // força reflow pra animação reiniciar mesmo trocando 2x rápido
+    el.classList.add("price-pop");
+  }
+  function selectKit(i: number, animate = true) {
     const k = KITS[i];
     const disc = discountPercent(k);
     document.querySelectorAll<HTMLElement>(".of-kit").forEach((el) => {
@@ -861,6 +871,7 @@ const productSchema = {
     if (oldEl) oldEl.textContent = money(k.original);
     if (badgeEl) badgeEl.textContent = "-" + disc + "%";
     if (kitEl) kitEl.textContent = `${k.name} · R$ ${k.perUnit.toFixed(2).replace(".", ",")} por frasco`;
+    if (animate) { pop(priceEl); pop(oldEl); pop(badgeEl); pop(kitEl); }
     setSelectedKit(i);
   }
   document.querySelectorAll<HTMLElement>(".of-kit").forEach((el) => {
@@ -883,7 +894,8 @@ const productSchema = {
   });
   // Boot: garante que o localStorage começa com o DEFAULT_KIT_INDEX
   // pra CheckoutModal ler o valor certo antes do usuário mexer no seletor.
-  selectKit(DEFAULT_KIT_INDEX);
+  // animate=false pra não disparar o pop-pulse no primeiro paint (LCP).
+  selectKit(DEFAULT_KIT_INDEX, false);
 
   // ── 3 PASSOS ───────────────────────────────────────────────────────────────
   let psAuto: number | null = null, psIdx = 0;
@@ -961,6 +973,30 @@ const productSchema = {
       if (top < h * 0.95) el.classList.add("in");
       else rio.observe(el);
     });
+  });
+
+  // ── CONTAGEM DO "R$/DIA" ao entrar na tela ─────────────────────────────────
+  document.querySelectorAll<HTMLElement>("[data-countup]").forEach((el) => {
+    const target = Number(el.dataset.countup);
+    if (!Number.isFinite(target)) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let done = false;
+    const cio = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || done) return;
+      done = true;
+      cio.disconnect();
+      if (reduce) return;
+      const dur = 900;
+      const t0 = performance.now();
+      const ease = (t: number) => 1 - Math.pow(1 - t, 3); // ease-out-cubic
+      function tick(now: number) {
+        const t = Math.min(1, (now - t0) / dur);
+        el.textContent = (target * ease(t)).toFixed(2).replace(".", ",");
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }, { threshold: 0.4 });
+    cio.observe(el);
   });
 
   // ── STICKY CTA: histerese pra não flip-flopar quando .buycta encosta na dobra
